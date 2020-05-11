@@ -1,12 +1,14 @@
-package hu.unideb.inf;
+package controller;
+
+import javafx.fxml.FXML;
+import main.App;
 
 import java.io.IOException;
-import javafx.fxml.FXML;
 
 public class SecondaryController {
 
     @FXML
     private void switchToPrimary() throws IOException {
-        App.setRoot("primary");
+        App.setRoot("/fxml/primary");
     }
 }
