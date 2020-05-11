@@ -19,6 +19,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("/fxml/primary"));
         stage.setScene(scene);
+        stage.setWidth(600);
+        stage.setHeight(600);
         stage.show();
     }
 
