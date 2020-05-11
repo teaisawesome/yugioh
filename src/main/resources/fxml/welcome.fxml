@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="hello" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WelcomeController">
+   <children>
+      <TextField id="player1-txtfld" fx:id="player1Textfield" layoutX="58.0" layoutY="187.0" />
+      <Label layoutX="58.0" layoutY="151.0" text="Játékos 1 név:" textFill="#f50707">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="player2Textfield" layoutX="370.0" layoutY="187.0" AnchorPane.leftAnchor="370.0" />
+      <Label layoutX="370.0" layoutY="151.0" text="Játékos 2 név:" textFill="#28ffd0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Button layoutX="213.0" layoutY="292.0" mnemonicParsing="false" onAction="#startAction" prefHeight="39.0" prefWidth="163.0" text="Let's Duel!" />
+      <Label fx:id="player1ErrorLabel" layoutX="58.0" layoutY="222.0" prefHeight="56.0" prefWidth="171.0" textFill="#f75439">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="player2ErrorLabel" layoutX="370.0" layoutY="222.0" prefHeight="56.0" prefWidth="171.0" textFill="#e10202">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
