@@ -16,8 +16,8 @@ public class App extends Application
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/game.fxml"));
         stage.setTitle("Yu-Gi-OH!");
         stage.setScene(new Scene(root));
-        stage.setWidth(1000);
-        stage.setHeight(800);
+        stage.setWidth(1024);
+        stage.setHeight(720);
         stage.show();
     }
 }
