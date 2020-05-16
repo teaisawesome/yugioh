@@ -5,3 +5,7 @@
     -fx-background-size: cover;
     -fx-background-position: center;
 }
+#kep
+{
+    fx-background-image: url("../pictures/mainbg.jpg");
+}
