@@ -5,7 +5,9 @@
     -fx-background-size: cover;
     -fx-background-position: center;
 }
-#kep
+#card
 {
-    fx-background-image: url("../pictures/mainbg.jpg");
+    -fx-background-image: url("../pictures/excodia-card-faceup.jpg");
+    -fx-background-position: center;
+    -fx-background-size: cover;
 }
