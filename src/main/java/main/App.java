@@ -13,11 +13,9 @@ public class App extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/game.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/welcome.fxml"));
         stage.setTitle("Yu-Gi-OH!");
         stage.setScene(new Scene(root));
-        stage.setWidth(1024);
-        stage.setHeight(720);
         stage.show();
     }
 }

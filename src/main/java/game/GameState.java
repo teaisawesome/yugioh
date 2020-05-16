@@ -20,6 +20,19 @@ public class GameState
         players = new Player[2];
 
         this.turn = 0;
+
+        players[0] = Player.builder()
+                .name("player1Name")
+                .build();
+
+        players[1] = Player.builder()
+                .name("player2Name")
+                .build();
+    }
+
+    public Player getPlayer(int playerIndex)
+    {
+        return players[playerIndex];
     }
 
 }
