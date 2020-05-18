@@ -30,6 +30,18 @@ public class GameState
                 .build();
     }
 
+    public Card generateCard()
+    {
+        Card card = Card.builder()
+                .cardName("Blue Eyes White Dragon")
+                .frontFace("blue-eyes-front.png")
+                .backFace("blue-eyes-back.png")
+                .build();
+
+        return card;
+    }
+
+
     public Player getPlayer(int playerIndex)
     {
         return players[playerIndex];
