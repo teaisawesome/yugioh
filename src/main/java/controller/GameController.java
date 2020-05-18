@@ -42,5 +42,7 @@ public class GameController
             log.info("Kör:" + gameState.getPlayer(1).getName());
             gameState.setTurn(0);
         }
+
+        gameState.generateCard();
     }
 }

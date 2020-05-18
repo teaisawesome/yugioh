@@ -1,5 +1,8 @@
 package game;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import guice.PersistenceModule;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,11 +35,18 @@ public class GameState
 
     public Card generateCard()
     {
+        Injector injector = Guice.createInjector(new PersistenceModule("test"));
+        CardDao cardDao = injector.getInstance(CardDao.class);
+
         Card card = Card.builder()
                 .cardName("Blue Eyes White Dragon")
                 .frontFace("blue-eyes-front.png")
                 .backFace("blue-eyes-back.png")
                 .build();
+
+        cardDao.persist(card);
+
+        cardDao.findAll().forEach(System.out::println);
 
         return card;
     }
