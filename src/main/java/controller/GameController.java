@@ -1,6 +1,7 @@
 package controller;
 
 import game.GameState;
+import game.cards.MonsterCard;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -36,6 +37,7 @@ public class GameController
     {
         gameState = new GameState();
 
+        gameState.initMonsterCards();
     }
 
     public void endTurn(MouseEvent mouseEvent)
@@ -52,17 +54,38 @@ public class GameController
 
         gameState.setPlayerData();
 
+        for (MonsterCard mc: gameState.getPlayer(0).getDeck().getMonsterCards())
+        {
+            Button button = new Button();
+            button.setPrefWidth(65);
+            button.setPrefHeight(90);
+            button.setId(mc.getCardName());
+            button.setStyle(
+                            "-fx-background-image: url('./pictures/monsters/"+mc.getFrontFace()+"');\n" +
+                            "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+            );
+
+            player1Hand.getChildren().add(button);
+
+            log.info("button created");
+
+
+        }
+        /*
         int max = gameState.getPlayer(0).getDeck().getMonsterCards().size();
 
         for (int i = 0; i < max; i++)
         {
             Button button = new Button("button"+i);
-            button.setPrefWidth(62);
-            button.setPrefHeight(81);
+            button.setPrefWidth(65);
+            button.setPrefHeight(90);
             button.setId("button"+i);
-            button.setOnMouseClicked(e->{
-
-            });
+            button.setStyle(
+                    "-fx-background-image: url('./pictures/excodia-card-faceup.jpg');\n" +
+                    "-fx-background-position: center;\n" +
+                    "    -fx-background-size: cover;"
+            );
 
             player1Hand.getChildren().add(button);
 
@@ -70,7 +93,6 @@ public class GameController
         }
 
         Button b = (Button)player1Hand.lookup("#button0");
-
-        log.info(String.valueOf(b));
+        */
     }
 }
