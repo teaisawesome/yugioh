@@ -33,5 +33,18 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
+      <ScrollPane layoutX="245.0" layoutY="591.0" prefHeight="115.0" prefWidth="534.0">
+         <content>
+            <HBox fx:id="player1Hand" prefHeight="100.0" prefWidth="777.0" spacing="15.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="81.0" prefWidth="62.0" text="Button" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="62.0" text="Button" />
+                  <Button layoutX="72.0" layoutY="10.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="62.0" text="Button" />
+                  <Button layoutX="134.0" layoutY="10.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="62.0" text="Button" />
+                  <Button layoutX="196.0" layoutY="10.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="62.0" text="Button" />
+               </children>
+            </HBox>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

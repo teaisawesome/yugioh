@@ -1,22 +1,18 @@
-package game;
+package game.cards;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
 @Entity
-public class Card
+public class MonsterCard
 {
     @Id
     @GeneratedValue
@@ -26,17 +22,35 @@ public class Card
      * The name of the card.
      */
     @Column(nullable = false)
-    private String cardName;
+    protected String cardName;
+
+    /**
+     * The level of the monster card.
+     */
+    @Column(nullable = false)
+    private int level;
+
+    /**
+     * The attack of the monster card.
+     */
+    @Column(nullable = false)
+    private int attack;
+
+    /**
+     * The defense of the monster card.
+     */
+    @Column(nullable = false)
+    private int defense;
 
     /**
      * The card's front face URL path.
      */
     @Column(nullable = false)
-    private String frontFace;
+    protected String frontFace;
 
     /**
      * The card's back face URL path.
      */
     @Column(nullable = false)
-    private String backFace;
+    protected String backFace;
 }

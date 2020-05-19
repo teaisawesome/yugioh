@@ -13,4 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class Player
 {
     private String name;
+
+    private Deck deck;
+
+    private Hand hand;
 }
