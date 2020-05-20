@@ -57,8 +57,8 @@ public class GameController
         for (MonsterCard mc: gameState.getPlayer(0).getDeck().getMonsterCards())
         {
             Button button = new Button();
-            button.setPrefWidth(65);
-            button.setPrefHeight(90);
+            button.setPrefWidth(100);
+            button.setPrefHeight(140);
             button.setId(mc.getCardName());
             button.setStyle(
                             "-fx-background-image: url('./pictures/monsters/"+mc.getFrontFace()+"');\n" +

@@ -1,13 +1,6 @@
-#hello
+#player1Hand > .button:hover
 {
-    -fx-background-color: black;
-    /*-fx-background-image: url("../pictures/mainbg.jpg");*/
-    -fx-background-size: cover;
-    -fx-background-position: center;
-}
-#card
-{
-    -fx-background-image: url("../pictures/excodia-card-faceup.jpg");
-    -fx-background-position: center;
-    -fx-background-size: cover;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0, 0, 0);
+    -fx-pref-width: 110;
+    -fx-pref-height: 150;
 }
