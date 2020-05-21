@@ -32,7 +32,7 @@
       </Button>
       <ScrollPane layoutX="680.0" layoutY="800.0" prefHeight="185.0" prefWidth="560.0">
          <content>
-            <HBox id="player1Hand" fx:id="player1Hand" prefHeight="163.0" prefWidth="540.0" spacing="15.0">
+            <HBox id="player1Hand" fx:id="player1Hand" prefHeight="163.0" prefWidth="800.0" spacing="15.0">
                <children>
                </children>
             </HBox>

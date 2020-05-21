@@ -114,5 +114,8 @@ public class GameState
         cardDao.persist(card3);
         cardDao.persist(card4);
         cardDao.persist(card5);
+
+
+        cardDao.findAll().forEach(System.out::println);
     }
 }

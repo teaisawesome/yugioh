@@ -1,0 +1,1 @@
+insert into MonsterCard(attack, backFace, cardName, defense, frontFace, level, id) values(2500, 'valami', 'blue', 2500, 'red-eyes-black-dragon-faceup.png', 5, 20)

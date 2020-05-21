@@ -61,7 +61,7 @@ public class GameController
             button.setPrefHeight(140);
             button.setId(mc.getCardName());
             button.setStyle(
-                            "-fx-background-image: url('./pictures/monsters/"+mc.getFrontFace()+"');\n" +
+                            "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + mc.getFrontFace()).toExternalForm()+"');\n" +
                             "-fx-background-position: center;\n" +
                             "-fx-background-size: cover;"
             );
@@ -70,29 +70,6 @@ public class GameController
 
             log.info("button created");
 
-
         }
-        /*
-        int max = gameState.getPlayer(0).getDeck().getMonsterCards().size();
-
-        for (int i = 0; i < max; i++)
-        {
-            Button button = new Button("button"+i);
-            button.setPrefWidth(65);
-            button.setPrefHeight(90);
-            button.setId("button"+i);
-            button.setStyle(
-                    "-fx-background-image: url('./pictures/excodia-card-faceup.jpg');\n" +
-                    "-fx-background-position: center;\n" +
-                    "    -fx-background-size: cover;"
-            );
-
-            player1Hand.getChildren().add(button);
-
-            log.info("button created");
-        }
-
-        Button b = (Button)player1Hand.lookup("#button0");
-        */
     }
 }
