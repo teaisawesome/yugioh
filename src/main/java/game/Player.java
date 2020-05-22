@@ -1,5 +1,6 @@
 package game;
 
+import game.deck.Deck;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

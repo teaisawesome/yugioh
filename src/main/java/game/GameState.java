@@ -4,10 +4,13 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import game.cards.CardDao;
 import game.cards.MonsterCard;
+import game.deck.Deck;
+import game.deck.DeckDao;
 import guice.PersistenceModule;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,6 +29,8 @@ public class GameState
 
     private CardDao cardDao = injector.getInstance(CardDao.class);
 
+    private DeckDao deckDao = injector.getInstance(DeckDao.class);
+
     public GameState()
     {
         players = new Player[2];
@@ -39,83 +44,51 @@ public class GameState
         players[1] = Player.builder()
                 .name("player2Name")
                 .build();
+
+        initPlayersDeck();
     }
 
+
+    public void initPlayersDeck()
+    {
+        int[] player1CardIds = {1,3,5};
+
+        List<MonsterCard> player1Monsters = new ArrayList<>();
+
+        for(int i : player1CardIds)
+        {
+            player1Monsters.add(cardDao.find(i).get());
+        }
+
+        Deck player1Deck = Deck.builder()
+                .monsterCards(player1Monsters)
+                .build();
+
+        int[] player2CardIds = {2,4};
+
+        List<MonsterCard> player2Monsters = new ArrayList<>();
+
+        for(int i : player2CardIds)
+        {
+            player2Monsters.add(cardDao.find(i).get());
+        }
+
+        Deck player2Deck = Deck.builder()
+                .monsterCards(player2Monsters)
+                .build();
+
+        deckDao.persist(player1Deck);
+        deckDao.persist(player2Deck);
+
+        getPlayer(0).setDeck(deckDao.find(1).get());
+        getPlayer(1).setDeck(deckDao.find(2).get());
+
+        log.info("Player's deck are initialized!");
+    }
 
     public Player getPlayer(int playerIndex)
     {
         return players[playerIndex];
     }
 
-    public void setPlayerData()
-    {
-        List<MonsterCard> monsters = cardDao.findAll();
-
-        Deck deck1 = Deck.builder()
-                .monsterCards(monsters)
-                .build();
-
-        Deck deck2 = Deck.builder()
-                .monsterCards(monsters)
-                .build();
-
-        players[0].setDeck(deck1);
-        players[1].setDeck(deck2);
-
-    }
-
-    // test
-    public void initMonsterCards()
-    {
-
-        MonsterCard card1 = MonsterCard.builder()
-                .cardName("Blue Eyes White Dragon")
-                .level(8)
-                .attack(3000)
-                .defense(2500)
-                .frontFace("blue-eyes-white-dragon-faceup.jpg")
-                .backFace("*")
-                .build();
-        MonsterCard card2 = MonsterCard.builder()
-                .cardName("Dark Magician")
-                .level(7)
-                .attack(2500)
-                .defense(2100)
-                .frontFace("dark-magician-faceup.jpg")
-                .backFace("*")
-                .build();
-        MonsterCard card3 = MonsterCard.builder()
-                .cardName("Dark Magician Girl")
-                .level(6)
-                .attack(2000)
-                .defense(1700)
-                .frontFace("dark-magician-girl-faceup.jpg")
-                .backFace("*")
-                .build();
-        MonsterCard card4 = MonsterCard.builder()
-                .cardName("Red Eyes Black Dragon")
-                .level(7)
-                .attack(2400)
-                .defense(2000)
-                .frontFace("red-eyes-black-dragon-faceup.png")
-                .backFace("*")
-                .build();
-        MonsterCard card5 = MonsterCard.builder()
-                .cardName("Sagi The Dark Clown")
-                .level(3)
-                .attack(600)
-                .defense(1500)
-                .frontFace("sagi-the-dark-clown-faceup.png")
-                .backFace("*")
-                .build();
-
-        cardDao.persist(card1);
-        cardDao.persist(card2);
-        cardDao.persist(card3);
-        cardDao.persist(card4);
-        cardDao.persist(card5);
-
-
-        cardDao.findAll().forEach(System.out::println);
-    }
 }

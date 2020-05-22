@@ -14,6 +14,9 @@ public class GameController
     @FXML
     private HBox player1Hand;
 
+    @FXML
+    private HBox player2Hand;
+
     private String player1Name;
     private String player2Name;
     private GameState gameState;
@@ -36,8 +39,6 @@ public class GameController
     public void initialize()
     {
         gameState = new GameState();
-
-        gameState.initMonsterCards();
     }
 
     public void endTurn(MouseEvent mouseEvent)
@@ -52,7 +53,7 @@ public class GameController
             gameState.setTurn(0);
         }
 
-        gameState.setPlayerData();
+        // gameState.setPlayerData();
 
         for (MonsterCard mc: gameState.getPlayer(0).getDeck().getMonsterCards())
         {
@@ -67,6 +68,24 @@ public class GameController
             );
 
             player1Hand.getChildren().add(button);
+
+            log.info("button created");
+
+        }
+
+        for (MonsterCard mc: gameState.getPlayer(1).getDeck().getMonsterCards())
+        {
+            Button button = new Button();
+            button.setPrefWidth(100);
+            button.setPrefHeight(140);
+            button.setId(mc.getCardName());
+            button.setStyle(
+                    "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + mc.getFrontFace()).toExternalForm()+"');\n" +
+                            "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+            );
+
+            player2Hand.getChildren().add(button);
 
             log.info("button created");
 
