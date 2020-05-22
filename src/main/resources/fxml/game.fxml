@@ -52,5 +52,13 @@
                <Insets left="10.0" right="10.0" top="10.0" />
            </padding>
        </ScrollPane>
+      <Label id="lifepoint" graphicTextGap="3.0" layoutX="408.0" layoutY="819.0" stylesheets="@style.css" text="7469" textAlignment="CENTER" textFill="#fff264">
+         <padding>
+            <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="35.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

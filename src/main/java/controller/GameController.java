@@ -3,6 +3,7 @@ package controller;
 import game.GameState;
 import game.cards.MonsterCard;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -39,21 +40,6 @@ public class GameController
     public void initialize()
     {
         gameState = new GameState();
-    }
-
-    public void endTurn(MouseEvent mouseEvent)
-    {
-        if (gameState.getTurn() == 0)
-        {
-            log.info("Kör:" + gameState.getPlayer(0).getName());
-            gameState.setTurn(1);
-        }
-        else {
-            log.info("Kör:" + gameState.getPlayer(1).getName());
-            gameState.setTurn(0);
-        }
-
-        // gameState.setPlayerData();
 
         for (MonsterCard mc: gameState.getPlayer(0).getDeck().getMonsterCards())
         {
@@ -62,7 +48,7 @@ public class GameController
             button.setPrefHeight(140);
             button.setId(mc.getCardName());
             button.setStyle(
-                            "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + mc.getFrontFace()).toExternalForm()+"');\n" +
+                    "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + mc.getFrontFace()).toExternalForm()+"');\n" +
                             "-fx-background-position: center;\n" +
                             "-fx-background-size: cover;"
             );
@@ -89,6 +75,70 @@ public class GameController
 
             log.info("button created");
 
+        }
+    }
+
+    public void endTurn(MouseEvent mouseEvent)
+    {
+        if (gameState.getTurn() == 0)
+        {
+            log.info("Kör:" + gameState.getPlayer(0).getName());
+
+            for(Node component : player1Hand.getChildren())
+            {
+                if(component instanceof Button)
+                {
+                    component.setStyle("-fx-background-image: url('"+ getClass().getResource("/pictures/backface.jpg").toExternalForm()+"');" +
+                    "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+                    );
+                }
+            }
+            int i = 0;
+            for(Node component : player2Hand.getChildren())
+            {
+                if(component instanceof Button)
+                {
+                    component.setStyle(
+                            "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + gameState.getPlayer(1).getDeck().getMonsterCards().get(i).getFrontFace()).toExternalForm()+"');\n" +
+                                    "-fx-background-position: center;\n" +
+                                    "-fx-background-size: cover;"
+                    );
+                    i++;
+                }
+            }
+
+            gameState.setTurn(1);
+        }
+        else {
+            log.info("Kör:" + gameState.getPlayer(1).getName());
+
+            for(Node component : player2Hand.getChildren())
+            {
+                if(component instanceof Button)
+                {
+                    component.setStyle("-fx-background-image: url('"+ getClass().getResource("/pictures/backface.jpg").toExternalForm()+"');" +
+                            "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+                    );
+                }
+            }
+            int i = 0;
+            for(Node component : player1Hand.getChildren())
+            {
+                if(component instanceof Button)
+                {
+                    component.setStyle(
+                            "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + gameState.getPlayer(0).getDeck().getMonsterCards().get(i).getFrontFace()).toExternalForm()+"');\n" +
+                                    "-fx-background-position: center;\n" +
+                                    "-fx-background-size: cover;"
+                    );
+                    i++;
+                }
+            }
+
+
+            gameState.setTurn(0);
         }
     }
 }

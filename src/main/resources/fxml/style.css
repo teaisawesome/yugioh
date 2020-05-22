@@ -4,3 +4,13 @@
     -fx-pref-width: 110;
     -fx-pref-height: 150;
 }
+#lifepoint
+{
+    -fx-background-color: radial-gradient(center 50% 50% , radius 70% , lightblue, cornflowerblue, darkblue);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0, 0, 0);
+}
+#lifepoint .text
+{
+    -fx-stroke: black;
+    -fx-stroke-width: 1px;
+}
