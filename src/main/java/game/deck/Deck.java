@@ -1,13 +1,12 @@
 package game.deck;
 
-import game.cards.MonsterCard;
+import game.cards.Card;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -15,14 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 @Builder
-@Entity
 public class Deck
 {
-    @Id
-    @GeneratedValue
     private int id;
 
-    @ManyToMany
-    @JoinColumn()
-    private List<MonsterCard> monsterCards;
+    private List<Card> cards;
 }
