@@ -1,6 +1,6 @@
 package game;
 
-import javafx.scene.control.Button;
+import game.cards.Card;
 import lombok.Data;
 
 @Data
@@ -9,5 +9,5 @@ public class CardSlot
     /**
      * Contains a card reference.
      */
-    private Button card;
+    private Card card;
 }

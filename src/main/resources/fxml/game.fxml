@@ -60,6 +60,5 @@
             <Font name="System Bold" size="35.0" />
          </font>
       </Label>
-      <Button fx:id="teszt" layoutX="544.0" layoutY="572.0" mnemonicParsing="false" onMouseClicked="#tesztClick" prefHeight="101.0" prefWidth="62.0" text="Button" />
    </children>
 </AnchorPane>

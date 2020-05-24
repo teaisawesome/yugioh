@@ -37,8 +37,6 @@ public class GameState
 
     private Board board;
 
-
-
     public GameState()
     {
         players = new Player[2];
@@ -68,7 +66,7 @@ public class GameState
 
     public void initPlayersDeck()
     {
-        int[] player1MonsterCardIds = {1,3,5};
+        int[] player1MonsterCardIds = {1,3,5,3,1,2};
         int[] player1SpellCardIds = {1};
 
         List<Card> player1Cards = new ArrayList<>();
@@ -87,17 +85,22 @@ public class GameState
                 .cards(player1Cards)
                 .build();
 
-        int[] player2CardIds = {2,4};
+        int[] player2MonsterCardIds = {2,4,1,5};
+        int[] player2SpellCardIds = {1};
 
-        List<Card> player2Monsters = new ArrayList<>();
+        List<Card> player2Cards = new ArrayList<>();
 
-        for(int i : player2CardIds)
+        for(int i : player2MonsterCardIds)
         {
-            player2Monsters.add(monsterCardDao.find(i).get());
+            player2Cards.add(monsterCardDao.find(i).get());
+        }
+        for(int i : player2SpellCardIds)
+        {
+            player2Cards.add(spellCardDao.find(i).get());
         }
 
         Deck player2Deck = Deck.builder()
-                .cards(player2Monsters)
+                .cards(player2Cards)
                 .build();
 
         getPlayer(0).setDeck(player1Deck);
@@ -158,6 +161,19 @@ public class GameState
             });
 
             player1Hand.getChildren().add(button);
+
+            log.info("button created");
+        }
+        for (Card card: getPlayer(1).getDeck().getCards())
+        {
+            Button button = new Button();
+            button.setPrefWidth(100);
+            button.setPrefHeight(140);
+            button.setId(card.getCardName());
+
+            setStyleForButton(button, card);
+
+            player2Hand.getChildren().add(button);
 
             log.info("button created");
         }

@@ -12,11 +12,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Slf4j
 @Builder
+@Slf4j
 public class Deck
 {
-    private int id;
-
     private List<Card> cards;
 }
