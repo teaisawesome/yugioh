@@ -12,5 +12,7 @@ public class Board
     /**
      * Card slots.
      */
-    private List<CardSlot> slots;
+    private List<CardSlot> monsterCardSlots;
+
+    private List<CardSlot> spellCardSlots;
 }

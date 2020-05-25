@@ -3,19 +3,16 @@ package game;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import game.cards.*;
+import game.cards.Card;
+import game.cards.MonsterCardDao;
+import game.cards.SpellCardDao;
 import game.deck.Deck;
 import guice.PersistenceModule;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.layout.HBox;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -25,9 +22,17 @@ import java.util.Optional;
 @Slf4j
 public class GameState
 {
+    public enum Phases
+    {
+        MAIN,
+        BATTLE
+    }
+
     private Player[] players;
 
     private int turn;
+
+    private Phases phase;
 
     private Injector injector = Guice.createInjector(new PersistenceModule("test"));
 
@@ -43,13 +48,16 @@ public class GameState
 
         this.turn = 0;
 
+        this.phase = Phases.MAIN;
+
         board = new Board();
 
-        for (int i = 0; i < 10; i++)
-        {
-            board.setSlots(Lists.newArrayList(
-               new CardSlot()
-            ));
+        board.setMonsterCardSlots(Lists.newArrayList());
+        board.setSpellCardSlots(Lists.newArrayList());
+
+        for (int i = 0; i < 5; i++) {
+            board.getMonsterCardSlots().add(new CardSlot());
+            board.getSpellCardSlots().add(new CardSlot());
         }
 
         players[0] = Player.builder()
@@ -60,24 +68,24 @@ public class GameState
                 .name("player2Name")
                 .build();
 
+        getPlayer(0).setHand(new Hand());
+        getPlayer(1).setHand(new Hand());
+
         initPlayersDeck();
     }
 
 
-    public void initPlayersDeck()
-    {
-        int[] player1MonsterCardIds = {1,3,5,3,1,2};
+    public void initPlayersDeck() {
+        int[] player1MonsterCardIds = {1};
         int[] player1SpellCardIds = {1};
 
         List<Card> player1Cards = new ArrayList<>();
 
-        for(int i : player1MonsterCardIds)
-        {
+        for (int i : player1MonsterCardIds) {
             player1Cards.add(monsterCardDao.find(i).get());
         }
 
-        for(int i : player1SpellCardIds)
-        {
+        for (int i : player1SpellCardIds) {
             player1Cards.add(spellCardDao.find(i).get());
         }
 
@@ -85,17 +93,15 @@ public class GameState
                 .cards(player1Cards)
                 .build();
 
-        int[] player2MonsterCardIds = {2,4,1,5};
+        int[] player2MonsterCardIds = {1,2,3,4};
         int[] player2SpellCardIds = {1};
 
         List<Card> player2Cards = new ArrayList<>();
 
-        for(int i : player2MonsterCardIds)
-        {
+        for (int i : player2MonsterCardIds) {
             player2Cards.add(monsterCardDao.find(i).get());
         }
-        for(int i : player2SpellCardIds)
-        {
+        for (int i : player2SpellCardIds) {
             player2Cards.add(spellCardDao.find(i).get());
         }
 
@@ -109,100 +115,30 @@ public class GameState
         log.info("Player's deck are initialized!");
     }
 
-    /**
-     * Initialize player hand cards.
-     */
-    public void initHandCards(HBox player1Hand, HBox player2Hand)
+    public boolean isBoardFullOfMonster()
     {
-        for (Card card: getPlayer(0).getDeck().getCards())
+        int count = 0;
+        if(getTurn() == 0)
         {
-            Button button = new Button();
-            button.setPrefWidth(100);
-            button.setPrefHeight(140);
-            button.setId(card.getCardName());
-
-            setStyleForButton(button, card);
-
-            // ezt berakni egy külön metódusba
-            button.setOnMouseClicked(e-> {
-                Alert alertDialog = new Alert(Alert.AlertType.NONE);
-                alertDialog.setTitle("Yu-Gi-OH! Action!");
-
-                if(card.getClass() == MonsterCard.class)
-                {
-                    alertDialog.setContentText("Choose a(n) action!");
-                    ButtonType buttonTypeOne = new ButtonType("Summon Monster");
-                    ButtonType buttonTypeTwo = new ButtonType("Set to Defense Mode");
-                    ButtonType cancelButton = new ButtonType("Cancel");
-
-                    alertDialog.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, cancelButton);
-
-                    Optional<ButtonType> result = alertDialog.showAndWait();
-                    if(result.get() == cancelButton)
-                    {
-                        alertDialog.close();
-                    }
-                }
-                else
-                {
-                    alertDialog.setContentText("Choose a(n) action to " + card.getCardName() + " spell!");
-                    ButtonType buttonTypeOne = new ButtonType("Activate");
-                    ButtonType buttonTypeTwo = new ButtonType("Set");
-                    ButtonType cancelButton = new ButtonType("Cancel");
-
-                    alertDialog.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, cancelButton);
-
-                    Optional<ButtonType> result = alertDialog.showAndWait();
-                    if(result.get() == cancelButton)
-                    {
-                        alertDialog.close();
-                    }
-                }
-            });
-
-            player1Hand.getChildren().add(button);
-
-            log.info("button created");
+            for(CardSlot slot : board.getMonsterCardSlots())
+            {
+                if(slot.getCard() != null)
+                    count++;
+            }
         }
-        for (Card card: getPlayer(1).getDeck().getCards())
+        else
         {
-            Button button = new Button();
-            button.setPrefWidth(100);
-            button.setPrefHeight(140);
-            button.setId(card.getCardName());
-
-            setStyleForButton(button, card);
-
-            player2Hand.getChildren().add(button);
-
-            log.info("button created");
+            for(CardSlot slot : board.getMonsterCardSlots())
+            {
+                if(slot.getCard() != null)
+                    count++;
+            }
         }
-    }
 
-    /**
-     * This method bind the card datas their own button.
-     *
-     * @param button the button reference which we set
-     * @param card the card reference which contain the card infos for bind them to button
-     */
-    public void setStyleForButton(Button button, Card card)
-    {
-        if(card.getClass() == MonsterCard.class)
-        {
-            button.setStyle(
-                    "-fx-background-image: url('"+ getClass().getResource("/pictures/monsters/" + card.getFrontFace()).toExternalForm()+"');\n" +
-                            "-fx-background-position: center;\n" +
-                            "-fx-background-size: cover;"
-            );
-        }
-        else if(card.getClass() == SpellCard.class)
-        {
-            button.setStyle(
-                    "-fx-background-image: url('"+ getClass().getResource("/pictures/spells/" + card.getFrontFace()).toExternalForm()+"');\n" +
-                            "-fx-background-position: center;\n" +
-                            "-fx-background-size: cover;"
-            );
-        }
+        if(count == 5)
+            return true;
+
+        return false;
     }
 
     public Player getPlayer(int playerIndex)

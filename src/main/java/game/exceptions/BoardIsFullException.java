@@ -24,7 +24,5 @@ public class BoardIsFullException extends Exception
         {
             alertDialog.close();
         }
-
-        log.error("Board is FULL!");
     }
 }
