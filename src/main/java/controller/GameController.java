@@ -5,12 +5,15 @@ import game.GameState;
 import game.cards.Card;
 import game.cards.MonsterCard;
 import game.cards.SpellCard;
-import game.exceptions.BoardIsFullException;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,11 @@ import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
-public class GameController {
+public class GameController
+{
+    @FXML
+    public AnchorPane anchor;
+
     @FXML
     private HBox player1Hand;
 
@@ -36,6 +43,7 @@ public class GameController {
     private String player2Name;
     private GameState gameState;
 
+    private HandEventHandler handEventHandler = new HandEventHandler();
 
     public void initPlayerNames(String player1Name, String player2Name)
     {
@@ -63,9 +71,12 @@ public class GameController {
         {
             log.info("Kör:" + gameState.getPlayer(0).getName());
 
-            drawCard(0);
+            addHandEventHandler(player2Hand.getChildren());
+
+            removeHandEventHandler(player1Hand.getChildren());
 
             gameState.setTurn(1);
+            drawCard(1);
         }
         else {
             log.info("Kör:" + gameState.getPlayer(1).getName());
@@ -81,9 +92,13 @@ public class GameController {
                     );
                 }
             }*/
-            drawCard(1);
+
+            addHandEventHandler(player1Hand.getChildren());
+
+            removeHandEventHandler(player2Hand.getChildren());
 
             gameState.setTurn(0);
+            drawCard(0);
         }
 
         gameState.setPhase(GameState.Phases.MAIN);
@@ -120,9 +135,6 @@ public class GameController {
         }
     }
 
-
-
-
     public void createDialogForCard(Card card, Button button)
     {
         Alert alertDialog = new Alert(Alert.AlertType.NONE);
@@ -141,13 +153,7 @@ public class GameController {
 
             if (result.get() == summonButton)
             {
-                try
-                {
                     summonMonster(card, button);
-                } catch (BoardIsFullException e)
-                {
-                    log.error("Board is FULL!");
-                }
             }
         }
         else
@@ -166,7 +172,7 @@ public class GameController {
         }
     }
 
-    public void summonMonster(Card card, Button button) throws BoardIsFullException
+    public void summonMonster(Card card, Button button)
     {
 
         if(!gameState.isBoardFullOfMonster())
@@ -183,18 +189,18 @@ public class GameController {
                     slot.setMode(CardSlot.Mode.ATTACK);
                     button.setPrefWidth(80);
                     button.setPrefHeight(120);
-                    button.setOnMouseClicked(e->{
-                        log.info("NOMVA");
-                    });
                     board.add(button,counter, x == 0 ? 2 : 1);
+                    gameState.getBoard().getMonsterCardSlots().forEach(System.out::println);
                     break;
                 }
                 counter++;
+
             }
         }
         else
         {
-            throw new BoardIsFullException();
+            //throw new BoardIsFullException();
+            log.info("Fullon van a board!");
         }
     }
 
@@ -218,15 +224,16 @@ public class GameController {
 
             if(playerId == 0)
             {
-
                 gameState.getPlayer(playerId).getHand().getCardsInHand().add(card);
 
+                button.addEventHandler(MouseEvent.ANY, handEventHandler);
                 player1Hand.getChildren().add(button);
             }
             else
             {
                 gameState.getPlayer(playerId).getHand().getCardsInHand().add(card);
 
+                button.addEventHandler(MouseEvent.ANY, handEventHandler);
                 player2Hand.getChildren().add(button);
             }
 
@@ -253,6 +260,63 @@ public class GameController {
             nextPhaseButton.setDisable(false);
 
             log.info(gameState.getPhase().toString());
+        }
+    }
+
+    public void addHandEventHandler(ObservableList<Node> childs)
+    {
+        for (Node node: childs)
+        {
+            node.addEventHandler(MouseEvent.ANY, handEventHandler);
+        }
+    }
+
+    public void removeHandEventHandler(ObservableList<Node> childs)
+    {
+        for (Node node: childs)
+        {
+            node.removeEventHandler(MouseEvent.ANY, handEventHandler);
+        }
+    }
+
+    class HandEventHandler implements EventHandler<MouseEvent>
+    {
+        @Override
+        public void handle(MouseEvent mouseEvent)
+        {
+            if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
+            {
+                /*
+                gameState.getPlayer(0).getDeck().getCards().stream()
+                        .filter(m -> "Monster".equals("hello"))
+                        .findFirst().get();
+
+                 */
+                if(gameState.getTurn() == 0)
+                {
+                    for (Card card: gameState.getPlayer(0).getHand().getCardsInHand())
+                    {
+                        if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
+                        {
+                            summonMonster(card, (Button) mouseEvent.getSource());
+                        }
+
+                        break;
+                    }
+                }
+                else
+                {
+                    for (Card card: gameState.getPlayer(1).getHand().getCardsInHand())
+                    {
+                        if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
+                        {
+                            summonMonster(card, (Button) mouseEvent.getSource());
+                        }
+
+                        break;
+                    }
+                }
+            }
         }
     }
 }

@@ -145,5 +145,4 @@ public class GameState
     {
         return players[playerIndex];
     }
-
 }
