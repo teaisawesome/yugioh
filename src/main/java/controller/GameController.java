@@ -5,6 +5,7 @@ import game.GameState;
 import game.cards.Card;
 import game.cards.MonsterCard;
 import game.cards.SpellCard;
+import game.exceptions.BoardIsFullException;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -92,7 +93,8 @@ public class GameController
                             "-fx-background-size: cover;"
                     );
                 }
-            }*/
+            }
+            */
             drawCard(0);
 
             addHandEventHandler(player1Hand.getChildren());
@@ -176,32 +178,72 @@ public class GameController
 
     public void summonMonster(Card card, Button button)
     {
-
-        if(!gameState.isBoardFullOfMonster())
+        try
         {
-            int counter = 0;
 
-            for(CardSlot slot : gameState.getPlayer1Board().getMonsterCardSlots())
+            if(!gameState.isBoardFullOfMonster(gameState.getPlayer(gameState.getTurn()).getBoard()))
             {
-                if (slot.getCard() == null)
+                int counter = 0;
+
+                for(CardSlot slot : gameState.getPlayer(gameState.getTurn()).getBoard().getMonsterCardSlots())
                 {
-                    int x = gameState.getTurn();
+                    if (slot.getCard() == null)
+                    {
+                        int x = gameState.getTurn();
 
-                    slot.setCard(card);
-                    slot.setMode(CardSlot.Mode.ATTACK);
-                    button.setPrefWidth(80);
-                    button.setPrefHeight(120);
-                    board.add(button,counter, x == 0 ? 2 : 1);
-                    break;
+                        slot.setCard(card);
+                        slot.setMode(CardSlot.Mode.ATTACK);
+                        button.setPrefWidth(80);
+                        button.setPrefHeight(120);
+                        board.add(button,counter, x == 0 ? 2 : 1);
+                        break;
+                    }
+                    counter++;
                 }
-                counter++;
-
+            }
+            else
+            {
+                throw new BoardIsFullException();
             }
         }
-        else
+        catch (Exception e)
         {
-            //throw new BoardIsFullException();
-            log.info("Fullon van a board!");
+            log.error("Board is full!");
+        }
+    }
+
+    public void setSpell(Card card, Button button)
+    {
+        try
+        {
+            if(!gameState.isBoardFullOfSpells(gameState.getPlayer(gameState.getTurn()).getBoard()))
+            {
+                int counter = 0;
+
+                for(CardSlot slot : gameState.getPlayer(gameState.getTurn()).getBoard().getSpellCardSlots())
+                {
+                    if (slot.getCard() == null)
+                    {
+                        int x = gameState.getTurn();
+
+                        slot.setCard(card);
+                        slot.setMode(CardSlot.Mode.ATTACK); // itt más mode kell a spellnek
+                        button.setPrefWidth(80);
+                        button.setPrefHeight(120);
+                        board.add(button,counter, x == 0 ? 3 : 0);
+                        break;
+                    }
+                    counter++;
+                }
+            }
+            else
+            {
+                throw new BoardIsFullException();
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("Board is full! Cannot take down more Spell Card!");
         }
     }
 
@@ -287,30 +329,20 @@ public class GameController
         {
             if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
             {
-
-                if(gameState.getTurn() == 0)
+                for (Card card : gameState.getPlayer(gameState.getTurn()).getHand().getCardsInHand())
                 {
-                    for (Card card : gameState.getPlayer(0).getHand().getCardsInHand())
+                    if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
                     {
-                        if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
+                        if(card.getClass() == MonsterCard.class)
                         {
                             summonMonster(card, (Button) mouseEvent.getSource());
-
-                            break;
                         }
-                    }
-                }
-                else
-                {
-                    for (Card card : gameState.getPlayer(1).getHand().getCardsInHand())
-                    {
-                        if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
+                        else if(card.getClass() == SpellCard.class)
                         {
-
-                            summonMonster(card, (Button) mouseEvent.getSource());
-
-                            break;
+                            setSpell(card, (Button) mouseEvent.getSource());
                         }
+
+                        break;
                     }
                 }
             }

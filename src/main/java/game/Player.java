@@ -18,4 +18,6 @@ public class Player
     private Deck deck;
 
     private Hand hand;
+
+    private Board board;
 }

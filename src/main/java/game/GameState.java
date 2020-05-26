@@ -40,10 +40,6 @@ public class GameState
 
     private SpellCardDao spellCardDao = injector.getInstance(SpellCardDao.class);
 
-    private Board player1Board;
-
-    private Board player2Board;
-
     public GameState()
     {
         players = new Player[2];
@@ -51,13 +47,6 @@ public class GameState
         this.turn = 0;
 
         this.phase = Phases.MAIN;
-
-        player1Board = new Board();
-        addSlotsToBoard(player1Board);
-
-        player2Board = new Board();
-        addSlotsToBoard(player2Board);
-
 
         players[0] = Player.builder()
                 .name("player1Name")
@@ -70,14 +59,20 @@ public class GameState
         getPlayer(0).setHand(new Hand());
         getPlayer(1).setHand(new Hand());
 
+        // create player's board
+        getPlayer(0).setBoard(new Board());
+        getPlayer(1).setBoard(new Board());
+        setSlotsToBoard(getPlayer(0).getBoard());
+        setSlotsToBoard(getPlayer(1).getBoard());
+
         initPlayersDeck();
     }
 
 
     public void initPlayersDeck()
     {
-        int[] player1MonsterCardIds = {1,5};
-        int[] player1SpellCardIds = {1};
+        int[] player1MonsterCardIds = {1,};
+        int[] player1SpellCardIds = {1,1,1,1,1,1};
 
         List<Card> player1Cards = new ArrayList<>();
 
@@ -93,7 +88,7 @@ public class GameState
                 .cards(player1Cards)
                 .build();
 
-        int[] player2MonsterCardIds = {1,2,3,4};
+        int[] player2MonsterCardIds = {1,2,3,4,1};
         int[] player2SpellCardIds = {1};
 
         List<Card> player2Cards = new ArrayList<>();
@@ -115,24 +110,14 @@ public class GameState
         log.info("Player's deck are initialized!");
     }
 
-    public boolean isBoardFullOfMonster()
+    public boolean isBoardFullOfMonster(Board board)
     {
         int count = 0;
-        if(getTurn() == 0)
+
+        for(CardSlot slot : board.getMonsterCardSlots())
         {
-            for(CardSlot slot : player1Board.getMonsterCardSlots())
-            {
-                if(slot.getCard() != null)
-                    count++;
-            }
-        }
-        else
-        {
-            for(CardSlot slot : player1Board.getMonsterCardSlots())
-            {
-                if(slot.getCard() != null)
-                    count++;
-            }
+            if(slot.getCard() != null)
+                count++;
         }
 
         if(count == 5)
@@ -141,7 +126,23 @@ public class GameState
         return false;
     }
 
-    public void addSlotsToBoard(Board playerBoard)
+    public boolean isBoardFullOfSpells(Board board)
+    {
+        int count = 0;
+
+        for(CardSlot slot : board.getSpellCardSlots())
+        {
+            if(slot.getCard() != null)
+                count++;
+        }
+
+        if(count == 5)
+            return true;
+
+        return false;
+    }
+
+    public void setSlotsToBoard(Board playerBoard)
     {
         playerBoard.setMonsterCardSlots(Lists.newArrayList());
         playerBoard.setSpellCardSlots(Lists.newArrayList());
