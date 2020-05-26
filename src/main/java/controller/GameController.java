@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.transform.Rotate;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
@@ -157,26 +158,34 @@ public class GameController
 
             if (result.get() == summonButton)
             {
-                    summonMonster(card, button);
+                summonMonster(card, button, CardSlot.Mode.ATTACK);
+            }
+            else if(result.get() == defenseButton)
+            {
+                summonMonster(card, button, CardSlot.Mode.DEFENSE);
             }
         }
         else
         {
             alertDialog.setContentText("Choose a(n) action to " + card.getCardName() + " spell!");
-            ButtonType buttonTypeOne = new ButtonType("Activate");
-            ButtonType buttonTypeTwo = new ButtonType("Set");
+            ButtonType activateButton = new ButtonType("Activate");
+            ButtonType setSpellButton = new ButtonType("Set");
             ButtonType cancelButton = new ButtonType("Cancel");
 
-            alertDialog.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, cancelButton);
+            alertDialog.getButtonTypes().setAll(activateButton, setSpellButton, cancelButton);
 
             Optional<ButtonType> result = alertDialog.showAndWait();
+            if(result.get() == setSpellButton)
+            {
+                setSpell(card, button);
+            }
             if (result.get() == cancelButton) {
                 alertDialog.close();
             }
         }
     }
 
-    public void summonMonster(Card card, Button button)
+    public void summonMonster(Card card, Button button, CardSlot.Mode mode)
     {
         try
         {
@@ -192,10 +201,22 @@ public class GameController
                         int x = gameState.getTurn();
 
                         slot.setCard(card);
-                        slot.setMode(CardSlot.Mode.ATTACK);
+
                         button.setPrefWidth(80);
                         button.setPrefHeight(120);
+
+                        if(mode == CardSlot.Mode.ATTACK)
+                        {
+                            slot.setMode(CardSlot.Mode.ATTACK);
+                        }
+                        else
+                        {
+                            slot.setMode(CardSlot.Mode.DEFENSE);
+                            button.getTransforms().add(new Rotate(90, 80/2, 120/2));
+                        }
+
                         board.add(button,counter, x == 0 ? 2 : 1);
+                        button.removeEventHandler(MouseEvent.ANY, handEventHandler);
                         break;
                     }
                     counter++;
@@ -212,6 +233,8 @@ public class GameController
         }
     }
 
+
+
     public void setSpell(Card card, Button button)
     {
         try
@@ -227,10 +250,11 @@ public class GameController
                         int x = gameState.getTurn();
 
                         slot.setCard(card);
-                        slot.setMode(CardSlot.Mode.ATTACK); // itt más mode kell a spellnek
+                        slot.setMode(CardSlot.Mode.SET); // itt más mode kell a spellnek
                         button.setPrefWidth(80);
                         button.setPrefHeight(120);
                         board.add(button,counter, x == 0 ? 3 : 0);
+                        button.removeEventHandler(MouseEvent.ANY, handEventHandler);
                         break;
                     }
                     counter++;
@@ -335,11 +359,11 @@ public class GameController
                     {
                         if(card.getClass() == MonsterCard.class)
                         {
-                            summonMonster(card, (Button) mouseEvent.getSource());
+                            createDialogForCard(card, (Button) mouseEvent.getSource());
                         }
                         else if(card.getClass() == SpellCard.class)
                         {
-                            setSpell(card, (Button) mouseEvent.getSource());
+                            createDialogForCard(card, (Button) mouseEvent.getSource());
                         }
 
                         break;
