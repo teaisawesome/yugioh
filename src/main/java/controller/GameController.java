@@ -9,6 +9,7 @@ import game.exceptions.BoardIsFullException;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -46,6 +47,7 @@ public class GameController
     private GameState gameState;
 
     private HandEventHandler handEventHandler = new HandEventHandler();
+    private BattleEventHandler battleEventHandler = new BattleEventHandler();
 
     public void initPlayerNames(String player1Name, String player2Name)
     {
@@ -107,6 +109,7 @@ public class GameController
 
         gameState.setPhase(GameState.Phases.MAIN);
         nextPhaseButton.setDisable(false);
+        removeBattleEventHandler(board.getChildren());
         log.info(gameState.getPhase().toString());
     }
 
@@ -116,6 +119,7 @@ public class GameController
         drawCard(0);
         drawCard(1);
         removeHandEventHandler(player2Hand.getChildren());
+        removeBattleEventHandler(board.getChildren());
 
         log.info("Player started hand created!");
     }
@@ -180,6 +184,76 @@ public class GameController
                 setSpell(card, button);
             }
             if (result.get() == cancelButton) {
+                alertDialog.close();
+            }
+        }
+    }
+
+    public void battlePhaseDialog(Card card, CardSlot.Mode mode)
+    {
+        Alert alertDialog = new Alert(Alert.AlertType.NONE);
+        alertDialog.setTitle("Yu-Gi-OH! Action!");
+        alertDialog.setContentText("Choose a(n) action!");
+
+        if(card.getClass() == MonsterCard.class)
+        {
+            if(mode == CardSlot.Mode.ATTACK)
+            {
+                ButtonType attackButton = new ButtonType("Attack!");
+                ButtonType flipToDefenseButton = new ButtonType("Flip to Defense Position");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                alertDialog.getButtonTypes().setAll(attackButton, flipToDefenseButton, cancelButton);
+
+                Optional<ButtonType> result = alertDialog.showAndWait();
+
+                if (result.get() == attackButton)
+                {
+                    log.info("Támadtam!");
+                }
+                else if(result.get() == flipToDefenseButton)
+                {
+                    log.info("Megfordítottam DEF-be!");
+                }
+                else
+                {
+                    alertDialog.close();
+                }
+            }
+            else
+            {
+                ButtonType flipButton = new ButtonType("Flip to Attack!");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                alertDialog.getButtonTypes().setAll(flipButton, cancelButton);
+
+                Optional<ButtonType> result = alertDialog.showAndWait();
+
+                if (result.get() == flipButton)
+                {
+                    log.info("Flip to Attack!");
+                }
+                else if(result.get() == cancelButton)
+                {
+                    alertDialog.close();
+                }
+            }
+        }
+        else
+        {
+            ButtonType activateButton = new ButtonType("Activate!");
+            ButtonType cancelButton = new ButtonType("Cancel");
+
+            alertDialog.getButtonTypes().setAll(activateButton, cancelButton);
+
+            Optional<ButtonType> result = alertDialog.showAndWait();
+
+            if (result.get() == activateButton)
+            {
+                log.info("Aktiváltam!");
+            }
+            else if(result.get() == cancelButton)
+            {
                 alertDialog.close();
             }
         }
@@ -312,24 +386,6 @@ public class GameController
         }
     }
 
-    public void nextPhase(MouseEvent mouseEvent)
-    {
-        if(gameState.getPhase() == GameState.Phases.MAIN)
-        {
-            gameState.setPhase(GameState.Phases.BATTLE);
-            nextPhaseButton.setDisable(true);
-
-            log.info(gameState.getPhase().toString());
-        }
-        else
-        {
-            gameState.setPhase(GameState.Phases.MAIN);
-            nextPhaseButton.setDisable(false);
-
-            log.info(gameState.getPhase().toString());
-        }
-    }
-
     public void addHandEventHandler(ObservableList<Node> childs)
     {
         for (Node node: childs)
@@ -343,6 +399,37 @@ public class GameController
         for (Node node: childs)
         {
             node.removeEventHandler(MouseEvent.ANY, handEventHandler);
+        }
+    }
+
+    public void addBattleEventHandler(ObservableList<Node> childs)
+    {
+        for (Node node: childs)
+        {
+            node.addEventHandler(MouseEvent.ANY, battleEventHandler);
+        }
+    }
+
+    public void removeBattleEventHandler(ObservableList<Node> childs)
+    {
+        for (Node node: childs)
+        {
+            node.removeEventHandler(MouseEvent.ANY, battleEventHandler);
+        }
+    }
+
+    public void nextPhase(MouseEvent mouseEvent)
+    {
+        nextPhaseButton.setDisable(true);
+        if(gameState.getTurn() == 0)
+        {
+            addBattleEventHandlerByRow(2);
+            addBattleEventHandlerByRow(3);
+        }
+        else
+        {
+            addBattleEventHandlerByRow(0);
+            addBattleEventHandlerByRow(1);
         }
     }
 
@@ -368,6 +455,42 @@ public class GameController
 
                         break;
                     }
+                }
+            }
+        }
+    }
+
+    void addBattleEventHandlerByRow(int row)
+    {
+        for (Node node : board.getChildren())
+        {
+            if(node.getClass() == Group.class)
+                continue;
+
+            if(board.getRowIndex(node) == row)
+            {
+                node.addEventHandler(MouseEvent.ANY, battleEventHandler);
+            }
+        }
+    }
+
+    class BattleEventHandler implements EventHandler<MouseEvent>
+    {
+        @Override
+        public void handle(MouseEvent mouseEvent)
+        {
+            if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
+            {
+                String cardName = ((Button)mouseEvent.getSource()).getId();
+                Card card = gameState.getCardFromPlayerBoard(cardName);
+
+                if(gameState.getCardModeFromPlayerBoard(cardName) == CardSlot.Mode.DEFENSE)
+                {
+                    battlePhaseDialog(card, gameState.getCardModeFromPlayerBoard(cardName));
+                }
+                else
+                {
+                    battlePhaseDialog(card, gameState.getCardModeFromPlayerBoard(cardName));
                 }
             }
         }

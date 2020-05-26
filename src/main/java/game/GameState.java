@@ -71,8 +71,8 @@ public class GameState
 
     public void initPlayersDeck()
     {
-        int[] player1MonsterCardIds = {1,};
-        int[] player1SpellCardIds = {1,1,1,1,1,1};
+        int[] player1MonsterCardIds = {1,3,3,2};
+        int[] player1SpellCardIds = {1,1};
 
         List<Card> player1Cards = new ArrayList<>();
 
@@ -151,6 +151,62 @@ public class GameState
             playerBoard.getMonsterCardSlots().add(new CardSlot());
             playerBoard.getSpellCardSlots().add(new CardSlot());
         }
+    }
+
+    public Card getCardFromPlayerBoard(String nameId)
+    {
+        for (CardSlot slot : getPlayer(getTurn()).getBoard().getMonsterCardSlots())
+        {
+            if(slot.getCard() != null)
+            {
+                if(slot.getCard().getCardName() == nameId)
+                {
+                    return slot.getCard();
+                }
+            }
+        }
+
+
+        for (CardSlot slot : getPlayer(getTurn()).getBoard().getSpellCardSlots())
+        {
+            if(slot.getCard() != null)
+            {
+                if(slot.getCard().getCardName() == nameId)
+                {
+                    return slot.getCard();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public CardSlot.Mode getCardModeFromPlayerBoard(String nameId)
+    {
+        for (CardSlot slot : getPlayer(getTurn()).getBoard().getMonsterCardSlots())
+        {
+            if(slot.getCard() != null)
+            {
+                if(slot.getCard().getCardName() == nameId)
+                {
+                    return slot.getMode();
+                }
+            }
+        }
+
+
+        for (CardSlot slot : getPlayer(getTurn()).getBoard().getSpellCardSlots())
+        {
+            if(slot.getCard() != null)
+            {
+                if(slot.getCard().getCardName() == nameId)
+                {
+                    return slot.getMode();
+                }
+            }
+        }
+
+        return null;
     }
 
     public Player getPlayer(int playerIndex)

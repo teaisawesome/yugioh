@@ -61,7 +61,7 @@
             <Font name="System Bold" size="35.0" />
          </font>
       </Label>
-      <Button fx:id="nextPhaseButton" layoutX="407.0" layoutY="419.0" mnemonicParsing="false" onMouseClicked="#nextPhase" text="Next Phase">
+      <Button fx:id="nextPhaseButton" layoutX="407.0" layoutY="419.0" mnemonicParsing="false" onMouseClicked="#nextPhase" text="Battle Phase">
          <font>
             <Font size="30.0" />
          </font>
