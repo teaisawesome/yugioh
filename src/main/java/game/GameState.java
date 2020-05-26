@@ -40,7 +40,9 @@ public class GameState
 
     private SpellCardDao spellCardDao = injector.getInstance(SpellCardDao.class);
 
-    private Board board;
+    private Board player1Board;
+
+    private Board player2Board;
 
     public GameState()
     {
@@ -50,15 +52,12 @@ public class GameState
 
         this.phase = Phases.MAIN;
 
-        board = new Board();
+        player1Board = new Board();
+        addSlotsToBoard(player1Board);
 
-        board.setMonsterCardSlots(Lists.newArrayList());
-        board.setSpellCardSlots(Lists.newArrayList());
+        player2Board = new Board();
+        addSlotsToBoard(player2Board);
 
-        for (int i = 0; i < 5; i++) {
-            board.getMonsterCardSlots().add(new CardSlot());
-            board.getSpellCardSlots().add(new CardSlot());
-        }
 
         players[0] = Player.builder()
                 .name("player1Name")
@@ -75,8 +74,9 @@ public class GameState
     }
 
 
-    public void initPlayersDeck() {
-        int[] player1MonsterCardIds = {1};
+    public void initPlayersDeck()
+    {
+        int[] player1MonsterCardIds = {1,5};
         int[] player1SpellCardIds = {1};
 
         List<Card> player1Cards = new ArrayList<>();
@@ -120,7 +120,7 @@ public class GameState
         int count = 0;
         if(getTurn() == 0)
         {
-            for(CardSlot slot : board.getMonsterCardSlots())
+            for(CardSlot slot : player1Board.getMonsterCardSlots())
             {
                 if(slot.getCard() != null)
                     count++;
@@ -128,7 +128,7 @@ public class GameState
         }
         else
         {
-            for(CardSlot slot : board.getMonsterCardSlots())
+            for(CardSlot slot : player1Board.getMonsterCardSlots())
             {
                 if(slot.getCard() != null)
                     count++;
@@ -139,6 +139,17 @@ public class GameState
             return true;
 
         return false;
+    }
+
+    public void addSlotsToBoard(Board playerBoard)
+    {
+        playerBoard.setMonsterCardSlots(Lists.newArrayList());
+        playerBoard.setSpellCardSlots(Lists.newArrayList());
+
+        for (int i = 0; i < 5; i++) {
+            playerBoard.getMonsterCardSlots().add(new CardSlot());
+            playerBoard.getSpellCardSlots().add(new CardSlot());
+        }
     }
 
     public Player getPlayer(int playerIndex)

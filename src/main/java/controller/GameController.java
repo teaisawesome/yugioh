@@ -71,12 +71,13 @@ public class GameController
         {
             log.info("Kör:" + gameState.getPlayer(0).getName());
 
+            drawCard(1);
+
             addHandEventHandler(player2Hand.getChildren());
 
             removeHandEventHandler(player1Hand.getChildren());
 
             gameState.setTurn(1);
-            drawCard(1);
         }
         else {
             log.info("Kör:" + gameState.getPlayer(1).getName());
@@ -92,13 +93,13 @@ public class GameController
                     );
                 }
             }*/
+            drawCard(0);
 
             addHandEventHandler(player1Hand.getChildren());
 
             removeHandEventHandler(player2Hand.getChildren());
 
             gameState.setTurn(0);
-            drawCard(0);
         }
 
         gameState.setPhase(GameState.Phases.MAIN);
@@ -111,6 +112,7 @@ public class GameController
     {
         drawCard(0);
         drawCard(1);
+        removeHandEventHandler(player2Hand.getChildren());
 
         log.info("Player started hand created!");
     }
@@ -179,7 +181,7 @@ public class GameController
         {
             int counter = 0;
 
-            for(CardSlot slot : gameState.getBoard().getMonsterCardSlots())
+            for(CardSlot slot : gameState.getPlayer1Board().getMonsterCardSlots())
             {
                 if (slot.getCard() == null)
                 {
@@ -190,7 +192,6 @@ public class GameController
                     button.setPrefWidth(80);
                     button.setPrefHeight(120);
                     board.add(button,counter, x == 0 ? 2 : 1);
-                    gameState.getBoard().getMonsterCardSlots().forEach(System.out::println);
                     break;
                 }
                 counter++;
@@ -286,34 +287,30 @@ public class GameController
         {
             if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
             {
-                /*
-                gameState.getPlayer(0).getDeck().getCards().stream()
-                        .filter(m -> "Monster".equals("hello"))
-                        .findFirst().get();
 
-                 */
                 if(gameState.getTurn() == 0)
                 {
-                    for (Card card: gameState.getPlayer(0).getHand().getCardsInHand())
+                    for (Card card : gameState.getPlayer(0).getHand().getCardsInHand())
                     {
                         if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
                         {
                             summonMonster(card, (Button) mouseEvent.getSource());
-                        }
 
-                        break;
+                            break;
+                        }
                     }
                 }
                 else
                 {
-                    for (Card card: gameState.getPlayer(1).getHand().getCardsInHand())
+                    for (Card card : gameState.getPlayer(1).getHand().getCardsInHand())
                     {
                         if(card.getCardName() == ((Button)mouseEvent.getSource()).getId())
                         {
-                            summonMonster(card, (Button) mouseEvent.getSource());
-                        }
 
-                        break;
+                            summonMonster(card, (Button) mouseEvent.getSource());
+
+                            break;
+                        }
                     }
                 }
             }
