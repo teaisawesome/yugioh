@@ -14,6 +14,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -42,12 +45,24 @@ public class GameController
     @FXML
     private Button nextPhaseButton;
 
+    @FXML
+    private ImageView cardView;
+
+    @FXML
+    private Label player1LifePoints;
+
+    @FXML
+    private Label player2LifePoints;
+
+
     private String player1Name;
     private String player2Name;
     private GameState gameState;
 
     private HandEventHandler handEventHandler = new HandEventHandler();
     private BattleEventHandler battleEventHandler = new BattleEventHandler();
+    private ShowEventHandler showEventHandler = new ShowEventHandler();
+    private AttackEventHandler attackEventHandler = new AttackEventHandler();
 
     public void initPlayerNames(String player1Name, String player2Name)
     {
@@ -66,7 +81,14 @@ public class GameController
     {
         gameState = new GameState();
 
+        initPlayersLifePoints();
+
         initHandCards();
+    }
+    public void initPlayersLifePoints()
+    {
+        player1LifePoints.setText(String.valueOf(gameState.getPlayer(0).getLifePoints()));
+        player2LifePoints.setText(String.valueOf(gameState.getPlayer(1).getLifePoints()));
     }
 
     public void endTurn(MouseEvent mouseEvent)
@@ -80,6 +102,8 @@ public class GameController
             addHandEventHandler(player2Hand.getChildren());
 
             removeHandEventHandler(player1Hand.getChildren());
+
+            removeEventHandlerByRow(1,attackEventHandler);
 
             gameState.setTurn(1);
         }
@@ -103,6 +127,8 @@ public class GameController
             addHandEventHandler(player1Hand.getChildren());
 
             removeHandEventHandler(player2Hand.getChildren());
+
+            removeEventHandlerByRow(2,attackEventHandler);
 
             gameState.setTurn(0);
         }
@@ -210,6 +236,20 @@ public class GameController
                 if (result.get() == attackButton)
                 {
                     log.info("Támadtam!");
+
+                    gameState.setClickedCard(card);
+                    if(gameState.getTurn() == 0)
+                    {
+                        addEventHandlerByRow(1,attackEventHandler);
+                        removeEventHandlerByRow(2, battleEventHandler);
+                        removeEventHandlerByRow(3, battleEventHandler);
+                    }
+                    else
+                    {
+                        addEventHandlerByRow(2,attackEventHandler);
+                        removeEventHandlerByRow(0, battleEventHandler);
+                        removeEventHandlerByRow(1, battleEventHandler);
+                    }
                 }
                 else if(result.get() == flipToDefenseButton)
                 {
@@ -368,6 +408,7 @@ public class GameController
                 gameState.getPlayer(playerId).getHand().getCardsInHand().add(card);
 
                 button.addEventHandler(MouseEvent.ANY, handEventHandler);
+                addShowEventHandler(button);
                 player1Hand.getChildren().add(button);
             }
             else
@@ -375,6 +416,7 @@ public class GameController
                 gameState.getPlayer(playerId).getHand().getCardsInHand().add(card);
 
                 button.addEventHandler(MouseEvent.ANY, handEventHandler);
+                addShowEventHandler(button);
                 player2Hand.getChildren().add(button);
             }
 
@@ -418,18 +460,23 @@ public class GameController
         }
     }
 
+    public void addShowEventHandler(Button button)
+    {
+            button.addEventHandler(MouseEvent.ANY, showEventHandler);
+    }
+
     public void nextPhase(MouseEvent mouseEvent)
     {
         nextPhaseButton.setDisable(true);
         if(gameState.getTurn() == 0)
         {
-            addBattleEventHandlerByRow(2);
-            addBattleEventHandlerByRow(3);
+            addEventHandlerByRow(2, battleEventHandler);
+            addEventHandlerByRow(3, battleEventHandler);
         }
         else
         {
-            addBattleEventHandlerByRow(0);
-            addBattleEventHandlerByRow(1);
+            addEventHandlerByRow(0, battleEventHandler);
+            addEventHandlerByRow(1, battleEventHandler);
         }
     }
 
@@ -460,7 +507,7 @@ public class GameController
         }
     }
 
-    void addBattleEventHandlerByRow(int row)
+    void addEventHandlerByRow(int row, EventHandler eventHandler)
     {
         for (Node node : board.getChildren())
         {
@@ -469,7 +516,22 @@ public class GameController
 
             if(board.getRowIndex(node) == row)
             {
-                node.addEventHandler(MouseEvent.ANY, battleEventHandler);
+                node.addEventHandler(MouseEvent.ANY, eventHandler);
+                //node.addEventHandler(MouseEvent.ANY, battleEventHandler);
+            }
+        }
+    }
+
+    void removeEventHandlerByRow(int row, EventHandler eventHandler)
+    {
+        for (Node node : board.getChildren())
+        {
+            if(node.getClass() == Group.class)
+                continue;
+
+            if(board.getRowIndex(node) == row)
+            {
+                node.removeEventHandler(MouseEvent.ANY, eventHandler);
             }
         }
     }
@@ -492,6 +554,47 @@ public class GameController
                 {
                     battlePhaseDialog(card, gameState.getCardModeFromPlayerBoard(cardName));
                 }
+            }
+        }
+    }
+    class ShowEventHandler implements EventHandler<MouseEvent>
+    {
+
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_ENTERED))
+            {
+                cardView.setImage(new Image(getClass().getResource(gameState.getDirectoryOfCard(((Button)mouseEvent.getSource()).getId())).toExternalForm()));
+            }
+            else if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_EXITED))
+            {
+                cardView.setImage(new Image(getClass().getResource("/pictures/backface.jpg").toExternalForm()));
+            }
+
+        }
+    }
+    class AttackEventHandler implements EventHandler<MouseEvent>
+    {
+        @Override
+        public void handle(MouseEvent mouseEvent)
+        {
+            if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
+            {
+                if(gameState.getTurn() == 0)
+                {
+                    gameState.hitEnemy();
+
+                    initPlayersLifePoints();
+                }
+                else
+                {
+                    gameState.hitEnemy();
+
+                    initPlayersLifePoints();
+                }
+                log.info("Megtámadva!!");
+
+
             }
         }
     }

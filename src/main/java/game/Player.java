@@ -15,6 +15,8 @@ public class Player
 {
     private String name;
 
+    private int lifePoints;
+
     private Deck deck;
 
     private Hand hand;

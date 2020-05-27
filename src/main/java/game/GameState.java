@@ -3,9 +3,7 @@ package game;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import game.cards.Card;
-import game.cards.MonsterCardDao;
-import game.cards.SpellCardDao;
+import game.cards.*;
 import game.deck.Deck;
 import guice.PersistenceModule;
 import lombok.Data;
@@ -40,6 +38,12 @@ public class GameState
 
     private SpellCardDao spellCardDao = injector.getInstance(SpellCardDao.class);
 
+    private List<MonsterCard> monsterCardList;
+
+    private List<SpellCard> spellCardList;
+
+    private Card clickedCard;
+
     public GameState()
     {
         players = new Player[2];
@@ -48,12 +52,17 @@ public class GameState
 
         this.phase = Phases.MAIN;
 
+        monsterCardList = monsterCardDao.findAll();
+        spellCardList = spellCardDao.findAll();
+
         players[0] = Player.builder()
                 .name("player1Name")
+                .lifePoints(8000)
                 .build();
 
         players[1] = Player.builder()
                 .name("player2Name")
+                .lifePoints(8000)
                 .build();
 
         getPlayer(0).setHand(new Hand());
@@ -207,6 +216,72 @@ public class GameState
         }
 
         return null;
+    }
+
+    public String getDirectoryOfCard(String name)
+    {
+        for (Card card : monsterCardList)
+        {
+            if(card.getCardName() == name)
+            {
+                return "/pictures/monsters/"+card.getFrontFace();
+            }
+        }
+
+        for (Card card : spellCardList)
+        {
+            if(card.getCardName() == name)
+            {
+                return "/pictures/spells/" + card.getFrontFace();
+            }
+        }
+
+        return "/pictures/backface.jpg";
+    }
+
+    public Card getCardByName(String name)
+    {
+        for (Card card : monsterCardList)
+        {
+            if(card.getCardName() == name)
+            {
+                return card;
+            }
+        }
+
+        for (Card card : spellCardList)
+        {
+            if(card.getCardName() == name)
+            {
+                return card;
+            }
+        }
+
+        return null;
+    }
+    public void hitEnemy()
+    {
+        if(getTurn() == 0)
+        {
+            if(getPlayer(1).getBoard().getMonsterCardSlots().size() != 0) {
+                int lifePoint = getPlayer(1).getLifePoints();
+                getPlayer(1).setLifePoints(lifePoint-1000);
+            }
+            else
+            {
+                log.info("Nincs direkt hit!");
+            }
+        }
+        else{
+            if(getPlayer(0).getBoard().getMonsterCardSlots().size() != 0) {
+                int lifePoint = getPlayer(1).getLifePoints();
+                getPlayer(0).setLifePoints(lifePoint-1000);
+            }
+            else
+            {
+                log.info("Nincs direkt hit!");
+            }
+        }
     }
 
     public Player getPlayer(int playerIndex)
