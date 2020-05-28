@@ -14,26 +14,15 @@
         <developer>
             <id>teaisawesome</id>
             <email>dekany.r123@gmail.com</email>
-            <name>D Róbert</name>
+            <name>Dékány Róbert Zsolt</name>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/lovaszbotond/project-card</connection>
-        <developerConnection>scm:git:https://github.com/lovaszbotond/project-card</developerConnection>
+        <connection>scm:git:https://github.com/teaisawesome/yugioh</connection>
+        <developerConnection>scm:git:https://github.com/teaisawesome/yugioh</developerConnection>
     </scm>
     <packaging>jar</packaging>
-    <description>
-        This is my project for my Software Engineering course at University.
-        This Game is a basic 1v1 card game. There are two players on the board.
-        They can draw cards and both of them got one special skill. They can
-        use it only once in the game.
-        Cards in the card deck has got attack and defense points.
-        Player can lose health point by attack and defense as well.
-        The aim of the game is get the other player health point 0 or less.
-        Players can hold maximum two cards in the hand , and on the table.
-        For more information please read the rules before you start the game.
-    </description>
 
     <dependencies>
         <dependency>
