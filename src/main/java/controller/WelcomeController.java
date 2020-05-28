@@ -55,4 +55,13 @@ public class WelcomeController {
             stage.show();
         }
     }
+
+    public void rules(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/rules.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Rules");
+        stage.show();
+    }
 }

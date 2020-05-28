@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RulesController">
+   <top>
+      <Label lineSpacing="3.0" text="Rules" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Khmer OS System" size="47.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <TextArea prefHeight="200.0" prefWidth="200.0" text="Dear Users!!&#10;&#10;This game is gain power from the YU-GI-OH anime series.&#10;It is basic Card battle game between 2 players.&#10;&#10;Description: &#10;-both players start with 8000 life points.&#10;-both players get a card deck randomly between two deck. &#10;-there is two type of cards : monstercard , spellcard.&#10;-monster cards can be summoned in attack or defense mode. &#10;-monsters can only attack in attack mode and protect the player in defense mode. &#10;-the game is over if one of the players get 0, or less then 0 life points.&#10;-if the enemy has no monster on the field player can directly hit the enemy. " BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <Button mnemonicParsing="false" onAction="#backToMain" text="Back To Main Menu" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </BorderPane.margin>
+      </Button>
+   </bottom>
+</BorderPane>

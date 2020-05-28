@@ -29,5 +29,6 @@
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
+      <Button fx:id="rules" layoutX="268.0" layoutY="360.0" mnemonicParsing="false" onAction="#rules" text="Rules" />
    </children>
 </AnchorPane>

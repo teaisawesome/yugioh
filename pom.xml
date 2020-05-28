@@ -23,6 +23,9 @@
         <developerConnection>scm:git:https://github.com/teaisawesome/yugioh</developerConnection>
     </scm>
     <packaging>jar</packaging>
+    <description>
+        This is a Yu-Gi-OH! trader card game made by Róbert Zsolt Dékány.
+    </description>
 
     <dependencies>
         <dependency>
