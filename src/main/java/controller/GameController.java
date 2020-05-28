@@ -27,6 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 import java.util.Random;
 
+
+/**
+ *
+ *
+ */
 @Slf4j
 public class GameController
 {
@@ -56,8 +61,12 @@ public class GameController
 
 
     private String player1Name;
+
     private String player2Name;
+
     private GameState gameState;
+
+    private Button clickedButton;
 
     private HandEventHandler handEventHandler = new HandEventHandler();
     private BattleEventHandler battleEventHandler = new BattleEventHandler();
@@ -84,6 +93,8 @@ public class GameController
         initPlayersLifePoints();
 
         initHandCards();
+
+        cardView.setImage(new Image(getClass().getResource("/pictures/backface.jpg").toExternalForm()));
     }
     public void initPlayersLifePoints()
     {
@@ -238,21 +249,45 @@ public class GameController
                     log.info("Támadtam!");
 
                     gameState.setClickedCard(card);
+
                     if(gameState.getTurn() == 0)
                     {
-                        addEventHandlerByRow(1,attackEventHandler);
-                        removeEventHandlerByRow(2, battleEventHandler);
-                        removeEventHandlerByRow(3, battleEventHandler);
+                        if(gameState.isEnemyBoardEmpty())
+                        {
+                            log.info("DIREKT HIT!");
+                            gameState.directHit((MonsterCard)card);
+                            initPlayersLifePoints();
+                            clickedButton.removeEventHandler(MouseEvent.ANY,battleEventHandler); // OK
+                        }
+                        else {
+                            addEventHandlerByRow(1, attackEventHandler);
+                            removeEventHandlerByRow(2, battleEventHandler);
+                            removeEventHandlerByRow(3, battleEventHandler);
+                        }
+
                     }
                     else
                     {
-                        addEventHandlerByRow(2,attackEventHandler);
-                        removeEventHandlerByRow(0, battleEventHandler);
-                        removeEventHandlerByRow(1, battleEventHandler);
+                        if(gameState.isEnemyBoardEmpty())
+                        {
+                            log.info("DIREKT HIT!");
+                            gameState.directHit((MonsterCard)card);
+                            initPlayersLifePoints();
+                            clickedButton.removeEventHandler(MouseEvent.ANY,battleEventHandler); // OK
+                        }
+                        else
+                        {
+                            addEventHandlerByRow(2,attackEventHandler);
+                            removeEventHandlerByRow(0, battleEventHandler);
+                            removeEventHandlerByRow(1, battleEventHandler);
+                        }
                     }
                 }
                 else if(result.get() == flipToDefenseButton)
                 {
+                    clickedButton.getTransforms().add(new Rotate(90, 80/2, 120/2));
+                    gameState.getPlayerBoardCardSlot(clickedButton.getId(), gameState.getPlayer(gameState.getTurn())).setMode(CardSlot.Mode.DEFENSE);
+                    clickedButton.removeEventHandler(MouseEvent.ANY,battleEventHandler);
                     log.info("Megfordítottam DEF-be!");
                 }
                 else
@@ -271,6 +306,10 @@ public class GameController
 
                 if (result.get() == flipButton)
                 {
+                    clickedButton.getTransforms().add(new Rotate(-90, 80/2, 120/2));
+                    gameState.getPlayerBoardCardSlot(clickedButton.getId(), gameState.getPlayer(gameState.getTurn())).setMode(CardSlot.Mode.ATTACK);
+
+                    clickedButton.removeEventHandler(MouseEvent.ANY,battleEventHandler);
                     log.info("Flip to Attack!");
                 }
                 else if(result.get() == cancelButton)
@@ -364,7 +403,7 @@ public class GameController
                         int x = gameState.getTurn();
 
                         slot.setCard(card);
-                        slot.setMode(CardSlot.Mode.SET); // itt más mode kell a spellnek
+                        slot.setMode(CardSlot.Mode.SET);
                         button.setPrefWidth(80);
                         button.setPrefHeight(120);
                         board.add(button,counter, x == 0 ? 3 : 0);
@@ -397,7 +436,7 @@ public class GameController
             gameState.getPlayer(playerId).getDeck().getCards().remove(card);
 
             Button button = new Button();
-            button.setPrefWidth(100);
+            button.setPrefWidth(95);
             button.setPrefHeight(140);
             button.setId(card.getCardName());
 
@@ -544,14 +583,16 @@ public class GameController
             if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
             {
                 String cardName = ((Button)mouseEvent.getSource()).getId();
-                Card card = gameState.getCardFromPlayerBoard(cardName);
+                Card card = gameState.getCardFromPlayerBoard(cardName, gameState.getPlayer(gameState.getTurn()));
 
                 if(gameState.getCardModeFromPlayerBoard(cardName) == CardSlot.Mode.DEFENSE)
                 {
+                    clickedButton = (Button)mouseEvent.getSource();
                     battlePhaseDialog(card, gameState.getCardModeFromPlayerBoard(cardName));
                 }
                 else
                 {
+                    clickedButton = (Button)mouseEvent.getSource();
                     battlePhaseDialog(card, gameState.getCardModeFromPlayerBoard(cardName));
                 }
             }
@@ -580,21 +621,34 @@ public class GameController
         {
             if(mouseEvent.getEventType().equals(MouseEvent.MOUSE_CLICKED))
             {
+                log.info("HITTED");
+
+                MonsterCard card1 = (MonsterCard)gameState.getCardByName(clickedButton.getId());
+                MonsterCard card2 = (MonsterCard)gameState.getCardByName(((Button)mouseEvent.getSource()).getId());
+
+                switch (gameState.monsterHit(card1, card2))
+                {
+                    case WIN: board.getChildren().remove(mouseEvent.getSource());break;
+                    case FAIL: board.getChildren().remove(clickedButton);break;
+                    case DRAW: board.getChildren().remove(clickedButton);  board.getChildren().remove(mouseEvent.getSource());break;
+                }
+
+                initPlayersLifePoints();
+
+                /*
                 if(gameState.getTurn() == 0)
                 {
-                    gameState.hitEnemy();
-
-                    initPlayersLifePoints();
+                    removeEventHandlerByRow(1, attackEventHandler);
+                    addEventHandlerByRow(2, battleEventHandler);
+                    addEventHandlerByRow(3, battleEventHandler);
                 }
                 else
                 {
-                    gameState.hitEnemy();
-
-                    initPlayersLifePoints();
+                    removeEventHandlerByRow(2, attackEventHandler);
+                    addEventHandlerByRow(0, battleEventHandler);
+                    addEventHandlerByRow(1, battleEventHandler);
                 }
-                log.info("Megtámadva!!");
-
-
+                 */
             }
         }
     }

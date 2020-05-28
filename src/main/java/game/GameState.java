@@ -119,6 +119,8 @@ public class GameState
         log.info("Player's deck are initialized!");
     }
 
+
+
     public boolean isBoardFullOfMonster(Board board)
     {
         int count = 0;
@@ -162,9 +164,9 @@ public class GameState
         }
     }
 
-    public Card getCardFromPlayerBoard(String nameId)
+    public Card getCardFromPlayerBoard(String nameId, Player player)
     {
-        for (CardSlot slot : getPlayer(getTurn()).getBoard().getMonsterCardSlots())
+        for (CardSlot slot : player.getBoard().getMonsterCardSlots())
         {
             if(slot.getCard() != null)
             {
@@ -176,7 +178,7 @@ public class GameState
         }
 
 
-        for (CardSlot slot : getPlayer(getTurn()).getBoard().getSpellCardSlots())
+        for (CardSlot slot : player.getBoard().getSpellCardSlots())
         {
             if(slot.getCard() != null)
             {
@@ -209,6 +211,35 @@ public class GameState
             if(slot.getCard() != null)
             {
                 if(slot.getCard().getCardName() == nameId)
+                {
+                    return slot.getMode();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public CardSlot getPlayerBoardCardSlot(String cardId, Player player)
+    {
+        for(CardSlot slot : player.getBoard().getMonsterCardSlots())
+        {
+            if(slot.getCard().getCardName() == cardId)
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
+    public CardSlot.Mode getPlayerCardModeById(Player player, String cardId)
+    {
+        for (CardSlot slot : player.getBoard().getMonsterCardSlots())
+        {
+            if(slot.getCard() != null)
+            {
+                if(slot.getCard().getCardName() == cardId)
                 {
                     return slot.getMode();
                 }
@@ -259,29 +290,138 @@ public class GameState
 
         return null;
     }
-    public void hitEnemy()
+
+    public boolean isEnemyBoardEmpty()
     {
         if(getTurn() == 0)
         {
-            if(getPlayer(1).getBoard().getMonsterCardSlots().size() != 0) {
-                int lifePoint = getPlayer(1).getLifePoints();
-                getPlayer(1).setLifePoints(lifePoint-1000);
+            for (CardSlot slot : getPlayer(1).getBoard().getMonsterCardSlots())
+            {
+                if(slot.getCard() != null)
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            for (CardSlot slot : getPlayer(0).getBoard().getMonsterCardSlots())
+            {
+                if(slot.getCard() != null)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public void removeCardFromPlayersBoard(Card card, Player player)
+    {
+        for(CardSlot slot : player.getBoard().getMonsterCardSlots())
+        {
+            if(slot.getCard() == card)
+            {
+                slot.setCard(null);
+                slot.setMode(null);
+            }
+        }
+    }
+    public void directHit(MonsterCard card)
+    {
+        if(getTurn() == 0)
+        {
+            int currentLifePoint = getPlayer(1).getLifePoints();
+
+            getPlayer(1).setLifePoints(currentLifePoint - card.getAttack());
+        }
+        else {
+            int currentLifePoint = getPlayer(0).getLifePoints();
+
+            getPlayer(0).setLifePoints(currentLifePoint - card.getAttack());
+        }
+    }
+
+    public AttackResult monsterHit(MonsterCard ownCard, MonsterCard enemyCard)
+    {
+        if(getTurn() == 0)
+        {
+            CardSlot.Mode enemyCardMode = getPlayerCardModeById(getPlayer(1), enemyCard.getCardName());
+
+            AttackResult result = getAttackResult(ownCard, enemyCard, enemyCardMode);
+
+            return result;
+
+        }
+        else
+        {
+            CardSlot.Mode enemyCardMode = getPlayerCardModeById(getPlayer(0), enemyCard.getCardName());
+
+            AttackResult result = getAttackResult(ownCard, enemyCard, enemyCardMode);
+
+            return result;
+        }
+    }
+
+    public AttackResult getAttackResult(MonsterCard ownCard, MonsterCard enemyCard, CardSlot.Mode enemyCardMode)
+    {
+        Player enemyPlayer = getTurn() == 0 ? getPlayer(1) : getPlayer(0);
+
+        int ownLifePoints = getPlayer(getTurn()).getLifePoints();
+        int enemyLifePoints = enemyPlayer.getLifePoints();
+
+        if(enemyCardMode == CardSlot.Mode.ATTACK)
+        {
+            if(ownCard.getAttack() > enemyCard.getAttack())
+            {
+                enemyPlayer.setLifePoints(enemyLifePoints - (ownCard.getAttack() - enemyCard.getAttack()));
+
+                removeCardFromPlayersBoard(enemyCard, enemyPlayer);
+
+                return AttackResult.WIN;
+            }
+            else if(ownCard.getAttack() < enemyCard.getAttack())
+            {
+                getPlayer(getTurn()).setLifePoints(ownLifePoints - (enemyCard.getAttack() - ownCard.getAttack()));
+
+                removeCardFromPlayersBoard(ownCard, getPlayer(getTurn()));
+
+                return AttackResult.FAIL;
             }
             else
             {
-                log.info("Nincs direkt hit!");
+                removeCardFromPlayersBoard(enemyCard, enemyPlayer);
+                removeCardFromPlayersBoard(ownCard, getPlayer(getTurn()));
+
+                return AttackResult.DRAW;
             }
         }
-        else{
-            if(getPlayer(0).getBoard().getMonsterCardSlots().size() != 0) {
-                int lifePoint = getPlayer(1).getLifePoints();
-                getPlayer(0).setLifePoints(lifePoint-1000);
+        else if(enemyCardMode == CardSlot.Mode.DEFENSE)
+        {
+            if(ownCard.getAttack() > enemyCard.getDefense())
+            {
+                removeCardFromPlayersBoard(enemyCard, enemyPlayer);
+
+                return AttackResult.WIN;
+            }
+            else if(ownCard.getAttack() < enemyCard.getDefense())
+            {
+                getPlayer(getTurn()).setLifePoints(ownLifePoints - (enemyCard.getAttack() - ownCard.getAttack()));
+
+                removeCardFromPlayersBoard(ownCard, getPlayer(getTurn()));
+
+                return AttackResult.DRAW;
             }
             else
             {
-                log.info("Nincs direkt hit!");
+                removeCardFromPlayersBoard(enemyCard, enemyPlayer);
+                removeCardFromPlayersBoard(ownCard, getPlayer(getTurn()));
+
+                return AttackResult.DRAW;
             }
         }
+        return null;
     }
 
     public Player getPlayer(int playerIndex)

@@ -91,6 +91,6 @@
             </LinearGradient>
          </textFill>
       </Button>
-      <ImageView fx:id="cardView" fitHeight="500.0" fitWidth="345.0" layoutX="1359.0" layoutY="251.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="cardView" id="cardView" fitHeight="500.0" fitWidth="345.0" layoutX="1359.0" layoutY="251.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

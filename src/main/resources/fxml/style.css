@@ -18,4 +18,8 @@
 {
     -fx-background-color: radial-gradient(center 50% 50% , radius 70% , lightblue, cornflowerblue, darkblue);
 }
+#cardView
+{
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0, 0, 0);
+}
 
