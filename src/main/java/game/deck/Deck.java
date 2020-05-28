@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+/**
+ * This class represent the player's deck which will contains monster- and spellscards.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +19,8 @@ import java.util.List;
 @Slf4j
 public class Deck
 {
+    /**
+     *  List of the cards which can be eighter monster- or spellcards.
+     */
     private List<Card> cards;
 }

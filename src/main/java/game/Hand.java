@@ -7,6 +7,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This Class represent's the players hand which will contains monster- and spellcards.
+ */
 @Data
 @AllArgsConstructor
 public class Hand

@@ -5,6 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import game.cards.*;
 import game.deck.Deck;
+import game.player.Player;
+import game.player.PlayerDao;
 import guice.PersistenceModule;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,8 @@ public class GameState
 
     private SpellCardDao spellCardDao = injector.getInstance(SpellCardDao.class);
 
+    private PlayerDao playerDao = injector.getInstance(PlayerDao.class);
+
     private List<MonsterCard> monsterCardList;
 
     private List<SpellCard> spellCardList;
@@ -60,10 +64,14 @@ public class GameState
                 .lifePoints(8000)
                 .build();
 
+        playerDao.persist(players[0]);
+
         players[1] = Player.builder()
                 .name("player2Name")
                 .lifePoints(8000)
                 .build();
+
+        playerDao.persist(players[1]);
 
         getPlayer(0).setHand(new Hand());
         getPlayer(1).setHand(new Hand());
@@ -80,8 +88,8 @@ public class GameState
 
     public void initPlayersDeck()
     {
-        int[] player1MonsterCardIds = {1,3,3,2};
-        int[] player1SpellCardIds = {1,1};
+        int[] player1MonsterCardIds = {1,3,2,2,5,4};
+        int[] player1SpellCardIds = {1,2};
 
         List<Card> player1Cards = new ArrayList<>();
 
@@ -327,6 +335,15 @@ public class GameState
                 slot.setMode(null);
             }
         }
+
+        for(CardSlot slot : player.getBoard().getSpellCardSlots())
+        {
+            if(slot.getCard() == card)
+            {
+                slot.setCard(null);
+                slot.setMode(null);
+            }
+        }
     }
     public void directHit(MonsterCard card)
     {
@@ -424,6 +441,25 @@ public class GameState
         return null;
     }
 
+    public boolean isGameOver()
+    {
+        if(getPlayer(0).getLifePoints() <= 0 || getPlayer(1).getLifePoints() <= 0)
+        {
+            log.info("Vége a játéknak!");
+            return true;
+        }
+
+        return false;
+    }
+
+    public void persistPlayerNames(String player1Name, String player2Name)
+    {
+        getPlayer(0).setName(player1Name);
+        getPlayer(1).setName(player2Name);
+
+        playerDao.persist(getPlayer(0));
+        playerDao.persist(getPlayer(1));
+    }
     public Player getPlayer(int playerIndex)
     {
         return players[playerIndex];

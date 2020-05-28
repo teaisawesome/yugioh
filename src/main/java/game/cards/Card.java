@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * This class defines superclass for MonsterCard and SpellCard to use. All of fields will be persisted with the entity.
+ */
 @Data
 @MappedSuperclass
 public class Card

@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+/**
+ * This class defines a monstercard in the game.
+ * This is subclass which extends Card class.
+ * All of fields will be persisted with the entity.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
