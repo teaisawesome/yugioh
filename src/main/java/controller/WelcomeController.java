@@ -6,12 +6,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.text.Element;
+import javax.swing.text.html.ImageView;
 import java.io.IOException;
 
+
+@Slf4j
 public class WelcomeController {
 
     @FXML
@@ -24,6 +35,42 @@ public class WelcomeController {
     private Label player1ErrorLabel;
     @FXML
     private Label player2ErrorLabel;
+
+    @FXML
+    private Pagination player1Image;
+
+    @FXML
+    private Pagination player2Image;
+
+
+    @FXML
+    public void initialize()
+    {
+        player1Image.setPageFactory(pageIndex -> {
+            Pane box = new Pane();
+
+            box.setStyle(
+                    "-fx-background-image: url('" + getClass().getResource("/pictures/playerpictures/playerPicture" + (pageIndex + 1) + ".png").toExternalForm() + "');\n" +
+                            "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+            );
+
+            return box;
+        });
+
+        player2Image.setPageFactory(pageIndex -> {
+            Pane box = new Pane();
+
+            box.setStyle(
+                    "-fx-background-image: url('" + getClass().getResource("/pictures/playerpictures/playerPicture" + (pageIndex + 1) + ".png").toExternalForm() + "');\n" +
+                            "-fx-background-position: center;\n" +
+                            "-fx-background-size: cover;"
+            );
+
+            return box;
+        });
+    }
+
 
     @FXML
     private void startAction(ActionEvent actionEvent) throws IOException

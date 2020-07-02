@@ -4,31 +4,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="hello" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WelcomeController">
+<AnchorPane id="hello" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WelcomeController">
    <children>
-      <TextField id="player1-txtfld" fx:id="player1Textfield" layoutX="58.0" layoutY="187.0" />
-      <Label layoutX="58.0" layoutY="151.0" text="Játékos 1 név:" textFill="#f50707">
+      <TextField id="player1-txtfld" fx:id="player1Textfield" layoutX="73.0" layoutY="132.0" />
+      <Label layoutX="73.0" layoutY="96.0" text="Játékos 1 név:" textFill="#f50707">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="player2Textfield" layoutX="370.0" layoutY="187.0" AnchorPane.leftAnchor="370.0" />
-      <Label layoutX="370.0" layoutY="151.0" text="Játékos 2 név:" textFill="#28ffd0">
+      <TextField fx:id="player2Textfield" layoutX="527.0" layoutY="131.0" AnchorPane.leftAnchor="527.0" />
+      <Label layoutX="527.0" layoutY="95.0" text="Játékos 2 név:" textFill="#28ffd0">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Button layoutX="213.0" layoutY="292.0" mnemonicParsing="false" onAction="#startAction" prefHeight="39.0" prefWidth="163.0" text="Let's Duel!" />
-      <Label fx:id="player1ErrorLabel" layoutX="58.0" layoutY="222.0" prefHeight="56.0" prefWidth="171.0" textFill="#f75439">
+      <Button layoutX="319.0" layoutY="375.0" mnemonicParsing="false" onAction="#startAction" prefHeight="39.0" prefWidth="163.0" text="Let's Duel!" />
+      <Label fx:id="player1ErrorLabel" layoutX="73.0" layoutY="167.0" prefHeight="56.0" prefWidth="301.0" textFill="#f75439">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="player2ErrorLabel" layoutX="370.0" layoutY="222.0" prefHeight="56.0" prefWidth="171.0" textFill="#e10202">
+      <Label fx:id="player2ErrorLabel" layoutX="527.0" layoutY="166.0" prefHeight="56.0" prefWidth="259.0" textFill="#e10202">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="rules" layoutX="268.0" layoutY="360.0" mnemonicParsing="false" onAction="#rules" text="Rules" />
+      <Button fx:id="rules" layoutX="374.0" layoutY="443.0" mnemonicParsing="false" onAction="#rules" text="Rules" />
+      <Pagination fx:id="player1Image" layoutX="73.0" layoutY="167.0" maxPageIndicatorCount="5" pageCount="5" prefHeight="200.0" prefWidth="171.0" />
+      <Pagination fx:id="player2Image" layoutX="527.0" layoutY="167.0" maxPageIndicatorCount="5" pageCount="5" prefHeight="200.0" prefWidth="171.0" />
    </children>
 </AnchorPane>
