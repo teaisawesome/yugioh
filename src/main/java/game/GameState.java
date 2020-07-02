@@ -126,7 +126,7 @@ public class GameState
      */
     public void initPlayersDeck()
     {
-        int[] player1MonsterCardIds = {1,2,3,4,5,6,7,8};
+        int[] player1MonsterCardIds = {1,2,3,4};
         int[] player1SpellCardIds = {1,2,1,2};
 
         List<Card> player1Cards = new ArrayList<>();
@@ -143,7 +143,7 @@ public class GameState
                 .cards(player1Cards)
                 .build();
 
-        int[] player2MonsterCardIds = {1,2,3,4,5,6,7,8};
+        int[] player2MonsterCardIds = {1,2,3,4};
         int[] player2SpellCardIds = {1,2,1,2};
 
         List<Card> player2Cards = new ArrayList<>();

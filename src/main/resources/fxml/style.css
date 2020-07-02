@@ -16,7 +16,9 @@
 }
 #main
 {
-    -fx-background-color: radial-gradient(center 50% 50% , radius 70% , lightblue, cornflowerblue, darkblue);
+    -fx-background-image: url("../pictures/duel-arena-bg.jpg");
+    -fx-background-position: center;
+    -fx-background-size: cover;
 }
 #cardView
 {
@@ -24,6 +26,7 @@
 }
 #hello
 {
-    -fx-background-image: url("../pictures/mainbg.jpg");
+    -fx-background-image: url("../pictures/kep1.jpg");
+    -fx-background-position: center;
     -fx-background-size: cover;
 }
