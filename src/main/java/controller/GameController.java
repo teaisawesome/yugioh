@@ -77,6 +77,14 @@ public class GameController
     @FXML
     private Label player2Name;
 
+    @FXML
+    private ImageView player1Image;
+
+    @FXML
+    private ImageView player2Image;
+
+
+
 
     //private String player1Name;
 
@@ -109,6 +117,18 @@ public class GameController
         log.info("p1:" + player1Name + " p2:" + player2Name);
     }
 
+    public void initPlayerImages(int player1ImageId, int player2ImageId)
+    {
+        player1Image.setImage(new Image(getClass().getResource("/pictures/playerpictures/playerPicture" + player1ImageId + ".png").toExternalForm()));
+
+        player2Image.setImage(new Image(getClass().getResource("/pictures/playerpictures/playerPicture" + player2ImageId + ".png").toExternalForm()));
+
+        log.info("Player1's image set to index: " + String.valueOf(player1ImageId));
+        log.info("Player2's image set to index: " + String.valueOf(player2ImageId));
+    }
+
+
+
     @FXML
     public void initialize()
     {
@@ -127,6 +147,7 @@ public class GameController
         player1LifePoints.setText(String.valueOf(gameState.getPlayer(0).getLifePoints()));
         player2LifePoints.setText(String.valueOf(gameState.getPlayer(1).getLifePoints()));
     }
+
 
     public void endTurn(MouseEvent mouseEvent)
     {

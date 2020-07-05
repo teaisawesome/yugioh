@@ -6,24 +6,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.text.Element;
-import javax.swing.text.html.ImageView;
 import java.io.IOException;
 
 
 @Slf4j
-public class WelcomeController {
+public class WelcomeController
+{
 
     @FXML
     private TextField player1Textfield;
@@ -33,6 +28,7 @@ public class WelcomeController {
 
     @FXML
     private Label player1ErrorLabel;
+
     @FXML
     private Label player2ErrorLabel;
 
@@ -97,6 +93,7 @@ public class WelcomeController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
             fxmlLoader.<GameController>getController().initPlayerNames(player1Textfield.getText(), player2Textfield.getText());
+            fxmlLoader.<GameController>getController().initPlayerImages(player1Image.getCurrentPageIndex() + 1, player2Image.getCurrentPageIndex() + 1);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

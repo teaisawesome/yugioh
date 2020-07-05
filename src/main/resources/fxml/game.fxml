@@ -54,7 +54,7 @@
                <Insets left="10.0" right="10.0" top="10.0" />
            </padding>
        </ScrollPane>
-      <Label id="lifepoint" fx:id="player1LifePoints" alignment="CENTER" graphicTextGap="3.0" layoutX="167.0" layoutY="780.0" minHeight="85.0" minWidth="200.0" stylesheets="@style.css" text="0000" textAlignment="CENTER" textFill="#fff264">
+      <Label id="lifepoint" fx:id="player1LifePoints" alignment="CENTER" graphicTextGap="3.0" layoutX="167.0" layoutY="800.0" minHeight="85.0" minWidth="200.0" stylesheets="@style.css" text="0000" textAlignment="CENTER" textFill="#fff264">
          <padding>
             <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
          </padding>
@@ -62,7 +62,7 @@
             <Font name="System Bold" size="35.0" />
          </font>
       </Label>
-       <Label id="lifepoint" fx:id="player2LifePoints" alignment="CENTER" graphicTextGap="3.0" layoutX="167.0" layoutY="223.0" minHeight="85.0" minWidth="200.0" stylesheets="@style.css" text="0000" textAlignment="CENTER" textFill="#fff264">
+       <Label id="lifepoint" fx:id="player2LifePoints" alignment="CENTER" graphicTextGap="3.0" layoutX="167.0" layoutY="377.0" minHeight="85.0" minWidth="200.0" stylesheets="@style.css" text="0000" textAlignment="CENTER" textFill="#fff264">
            <padding>
                <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
            </padding>
@@ -93,15 +93,17 @@
       </Button>
       <ImageView id="cardView" fx:id="cardView" fitHeight="500.0" fitWidth="345.0" layoutX="1359.0" layoutY="251.0" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="endButton" layoutY="969.0" mnemonicParsing="false" onAction="#end" prefHeight="26.0" prefWidth="0.0" text="Button" visible="false" />
-      <Label fx:id="player1Name" layoutX="182.0" layoutY="694.0" text="Player1">
+      <Label fx:id="player1Name" alignment="CENTER" contentDisplay="CENTER" layoutX="168.0" layoutY="722.0" prefWidth="200.0" text="Player1" textAlignment="CENTER">
          <font>
             <Font size="46.0" />
          </font>
       </Label>
-       <Label fx:id="player2Name" layoutX="181.0" layoutY="144.0" text="Player2">
+       <Label fx:id="player2Name" alignment="CENTER" layoutX="165.0" layoutY="300.0" prefHeight="56.0" prefWidth="200.0" text="Player2" textAlignment="CENTER">
            <font>
                <Font size="46.0" />
            </font>
        </Label>
+      <ImageView fx:id="player1Image" fitHeight="150.0" fitWidth="200.0" layoutX="168.0" layoutY="562.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player2Image" fitHeight="150.0" fitWidth="200.0" layoutX="167.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
